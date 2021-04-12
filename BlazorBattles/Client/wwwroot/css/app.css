@@ -154,6 +154,20 @@ app {
     .main .top-row a, .main .top-row .btn-link {
         margin-left: 0;
     }
+
+    .app-loader-container {
+        height: 200px;
+        width: 200px;
+        position: relative;
+    }
+
+    .app-loader {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 60%;
+        justify-content: center;
+    }
 }
 
 @media (min-width: 768px) {
@@ -185,5 +199,20 @@ app {
     .sidebar .collapse {
         /* Never collapse the sidebar for wide screens */
         display: block;
+    }
+
+    .app-loader-container {
+        height: 200px;
+        width: 200px;
+        position: relative;
+    }
+
+    .app-loader {
+        margin: 0;
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        justify-content: center;
+    }
     }
 }
