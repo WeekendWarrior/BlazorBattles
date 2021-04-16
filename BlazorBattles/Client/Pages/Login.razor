@@ -1,36 +1,29 @@
-﻿@page "/login"
-@inject IToastService ToastService
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthStateProvider
 
-@if (isAuthenticated)
-{
-    <h3>Welcome @user.Username!</h3>
-}
-else
-{
-    <EditForm Model="@user" OnValidSubmit="HandleLogin">
-        <DataAnnotationsValidator />
-        <div class="form-group">
-            <label for="username">Username</label>
-            <InputText id="username" @bind-Value="user.Username" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <InputText id="password" type="password" @bind-Value="user.Password" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-        <ValidationSummary />
-    </EditForm>
-}
+Please log in below or <NavLink href="register">register</NavLink> for a new account.
+
+<EditForm Model="@user" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="username">Username</label>
+        <InputText id="username" @bind-Value="user.Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" type="password" @bind-Value="user.Password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+    <ValidationSummary />
+</EditForm>
+
 
 @code {
     private UserLogin user = new UserLogin();
 
-    bool isAuthenticated = false;
-
-    private void HandleLogin()
+    private async void HandleLogin()
     {
-        isAuthenticated = true;
-
-        Console.WriteLine($"{user.Username} // {user.Password}");
+        await LocalStorage.SetItemAsync<bool>("isAuthenticated", true);
+        await AuthStateProvider.GetAuthenticationStateAsync();
     }
 }
