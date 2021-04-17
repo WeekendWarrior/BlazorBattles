@@ -1,5 +1,6 @@
 ﻿using BlazorBattles.Shared;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace BlazorBattles.Client.Services
 {
@@ -10,5 +11,7 @@ namespace BlazorBattles.Client.Services
         IList<UserUnit> MyUnits { get; set; }
 
         void AddUnit(int unitId);
+
+        Task LoadUnitsAsync();
     }
 }
