@@ -4,14 +4,13 @@
 
 <h3>Army</h3>
 
-
-
 @if (UnitService.MyUnits.Count == 0)
 {
     <p>No Army yet. <NavLink class="btn btn-primary" href="build">Start Building!</NavLink></p>
 }
 @if (UnitService.Units.Count > 0)
 {
+    <div class="alert alert-info">Total Units: @UnitService.MyUnits.Count</div>
     @foreach (var userUnit in UnitService.MyUnits)
     {
         <div class="army-list">
@@ -41,5 +40,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await UnitService.LoadUnitsAsync();
+        await UnitService.LoadUserUnitsAsync();
     }
 }

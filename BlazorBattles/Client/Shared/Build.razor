@@ -32,27 +32,26 @@
 
     bool needMoreBananas = false;
 
-    public void BuildUnit()
+    public async void BuildUnit()
     {
-        // Find the selected Unit.
-        var selectedUnit = UnitService.Units.FirstOrDefault(unit => unit.Id == selectedUnitId);
-        if (selectedUnit == null) return;
-
-        // Validate that the player has enough bananas to purchase the unit.
-        needMoreBananas = BananaService.Bananas < selectedUnit.BananaCost;
-        if (needMoreBananas)
-        {
-            ToastService.ShowError("Not enough Bananas!", ":(");
-            return;
-        }
-
-        BananaService.EatBananas(selectedUnit.BananaCost);
-
-        UnitService.AddUnit(selectedUnitId);
+        await UnitService.AddUnit(selectedUnitId);
+        await UnitService.LoadUserUnitsAsync();
+        StateHasChanged();
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await UnitService.LoadUserUnitsAsync();
         await UnitService.LoadUnitsAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        UnitService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UnitService.OnChange -= StateHasChanged;
     }
 }
