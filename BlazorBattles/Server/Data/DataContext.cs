@@ -13,5 +13,7 @@ namespace BlazorBattles.Server.Data
         public virtual DbSet<Unit> Units { get; set; }
 
         public virtual DbSet<User> Users { get; set; }
+
+        public virtual DbSet<UserUnit> UserUnits { get; set; }
     }
 }
