@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿using BlazorBattles.Client.Services;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace BlazorBattles.Client
     {
         private readonly ILocalStorageService _localStorageService;
         private readonly HttpClient _http;
+        private readonly IBananaService _bananaService;
 
-        public CustomAuthStateProvider(ILocalStorageService localStorageService, HttpClient http)
+        public CustomAuthStateProvider(ILocalStorageService localStorageService, HttpClient http, IBananaService bananaService)
         {
             _localStorageService = localStorageService;
             _http = http;
+            _bananaService = bananaService;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -31,11 +34,22 @@ namespace BlazorBattles.Client
 
             if (!string.IsNullOrEmpty(authToken))
             {
-                // Add the auth token to the server on every request.
-                _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
+                try
+                {
+                    // Add the auth token to the server on every request.
+                    _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
 
-                var claims = ParseClaimsFromJwt(authToken);
-                identity = new ClaimsIdentity(claims, "jwt");
+                    var claims = ParseClaimsFromJwt(authToken);
+                    identity = new ClaimsIdentity(claims, "jwt");
+              
+                    await _bananaService.GetBananas();
+                }
+                catch(Exception)
+                {
+                    // clear the identity
+                    await _localStorageService.RemoveItemAsync("authToken");
+                    identity = new ClaimsIdentity();
+                }
             }
 
             // Set the identity state.
