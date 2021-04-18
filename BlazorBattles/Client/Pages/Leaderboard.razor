@@ -1,0 +1,81 @@
+﻿@page "/leaderboard"
+@inject ILeaderboardService LeaderboardService
+@inject AuthenticationStateProvider AuthStateProvider
+
+<h3>Leaderboard</h3>
+
+@if (LeaderboardService.Leaderboard == null)
+{
+    <div class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">Loading Leaderboard...</h4>
+        <img src="icons/W_Axe013.png" />
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Victories</th>
+                <th>Defeats</th>
+                <th>Battles</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in LeaderboardService.Leaderboard)
+            {
+                <tr style="@GetMyStyle(entry.UserId)">
+                    <td>@entry.Rank</td>
+                    <td>@entry.Username</td>
+                    <td>@entry.Victories</td>
+                    <td>@entry.Defeats</td>
+                    <td>@entry.Battles</td>
+                    <td>
+                        @if (entry.UserId != myUserId)
+                        {
+                            <button class="btn btn-primary">Fight</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+
+    int myUserId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LeaderboardService.GetLeaderboard();
+
+        myUserId = await GetCurrentUserId();
+    }
+
+    private async Task<int> GetCurrentUserId()
+    {
+        var id = -1;
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
+        var claimNameId = authState.User.FindFirst(ClaimTypes.NameIdentifier);
+
+        var userId = claimNameId?.Value;
+
+        if (string.IsNullOrEmpty(userId)) return id;
+
+        int.TryParse(userId, out id);
+
+        return id;
+    }
+
+    private string GetMyStyle(int userId)
+    {
+        if (userId == myUserId) return "color: green; font-weight:600;";
+        
+        return string.Empty;
+    }
+}
