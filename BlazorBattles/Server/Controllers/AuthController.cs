@@ -28,7 +28,10 @@ namespace BlazorBattles.Server.Controllers
                 IsConfirmed = request.IsConfirmed
             };
 
-            var response = await _authRepository.Register(user, request.Password);
+            var startingUnitId = 1;
+            int.TryParse(request.StartUnitId, out startingUnitId);
+
+            var response = await _authRepository.Register(user, request.Password, startingUnitId);
 
             if (!response.Success) return BadRequest(response);
 
