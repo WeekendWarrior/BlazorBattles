@@ -9,6 +9,8 @@ namespace BlazorBattles.Client.Services
     {
         private readonly HttpClient _http;
 
+        public BattleResult LastBattle { get; set; } = new BattleResult();
+
         public BattleService(HttpClient http)
         {
             _http = http;
@@ -18,7 +20,9 @@ namespace BlazorBattles.Client.Services
         {
             var result = await _http.PostAsJsonAsync("api/battle", opponentId);
 
-            return await result.Content.ReadFromJsonAsync<BattleResult>();
+            LastBattle = await result.Content.ReadFromJsonAsync<BattleResult>();
+
+            return LastBattle;
         }
     }
 }

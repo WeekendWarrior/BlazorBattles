@@ -4,6 +4,7 @@
 @inject IBattleService BattleService
 @inject IBananaService BananaService
 @inject IToastService ToastService
+@inject NavigationManager NavigationManager
  
 <h3>Leaderboard</h3>
 
@@ -74,5 +75,7 @@ else
 
         await LeaderboardService.GetLeaderboard();
         await BananaService.GetBananas();
+
+        if (result.RoundsFought > 0) NavigationManager.NavigateTo("battlelog");
     }
 }
