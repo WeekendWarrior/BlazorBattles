@@ -1,6 +1,6 @@
 ﻿@page "/leaderboard"
 @inject ILeaderboardService LeaderboardService
-@inject AuthenticationStateProvider AuthStateProvider
+@inject IUserUtilities UserUtilites
 
 <h3>Leaderboard</h3>
 
@@ -51,25 +51,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LeaderboardService.GetLeaderboard();
-
-        myUserId = await GetCurrentUserId();
-    }
-
-    private async Task<int> GetCurrentUserId()
-    {
-        var id = -1;
-
-        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-
-        var claimNameId = authState.User.FindFirst(ClaimTypes.NameIdentifier);
-
-        var userId = claimNameId?.Value;
-
-        if (string.IsNullOrEmpty(userId)) return id;
-
-        int.TryParse(userId, out id);
-
-        return id;
+        myUserId = await UserUtilites.GetCurrentUserIdAsync();
     }
 
     private string GetMyStyle(int userId)
