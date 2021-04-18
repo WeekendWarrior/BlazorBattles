@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace BlazorBattles.Server.Controllers
 {
@@ -40,6 +41,34 @@ namespace BlazorBattles.Server.Controllers
 
             await _context.SaveChangesAsync();
             return Ok(user.Bananas);
+        }
+
+        [HttpGet("Leaderboard")]
+        public async Task<IActionResult> GetLeaderBoard()
+        {
+            var users = await _context.Users
+                .Where(user => !user.IsDeleted)
+                .ToListAsync();
+
+            users = users
+                .OrderByDescending(u => u.Victories)
+                .ThenBy(u => u.Defeats)
+                .ThenBy(u => u.DateCreated)
+                .ToList();
+
+            var rank = 1;
+            var response = users.Select(
+                user => new UserStatistic
+                {
+                    Rank = rank++,
+                    UserId = user.Id,
+                    Username = user.Username,
+                    Battles = user.Battles,
+                    Victories = user.Victories,
+                    Defeats = user.Defeats
+                });
+
+            return Ok(response);
         }
     }
 }

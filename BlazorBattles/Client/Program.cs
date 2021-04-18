@@ -26,6 +26,7 @@ namespace BlazorBattles.Client
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+            builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
             await builder.Build().RunAsync();
         }
