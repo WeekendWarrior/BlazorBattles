@@ -362,4 +362,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # SQLite
+*.db
 *.db-*
